@@ -89,14 +89,21 @@ class KNSmoothing:
         c_unigram = bigram[1]
         num_after = 0
         for token in self.stats.unigram_to_count.keys():
-            num_after += 1 if (preceding_unigram, token) in self.stats.bigram_to_count.keys() else 0
+            if (preceding_unigram, token) in self.stats.bigram_to_count.keys():
+                num_after+=1
+
         lambda_x_1 = discount * num_after / (self.stats.unigram_to_count[preceding_unigram])
-        num_numerator = 1 if bigram in self.stats.bigram_to_count.keys() else 0
-        num_denominator = len([self.stats.bigram_to_count.keys()])
+
+        num_numerator = 0
+        for token in self.stats.unigram_to_count.keys():
+            if (token,c_unigram) in self.stats.bigram_to_count.keys():
+                num_numerator+=1
+        num_denominator = len(self.stats.bigram_to_count.keys())
 
         p_continuation_x = num_numerator / num_denominator
-        return max(self.stats.bigram_to_count[bigram] - discount, 0) / self.stats.unigram_to_count[preceding_unigram] + \
-               lambda_x_1 * p_continuation_x
+        # print(f'bigram: {bigram} num_after: {num_after} lambda_x_1: {lambda_x_1} num_numerator: {num_numerator} num_denominator: {num_denominator} all:{len(self.stats.bigram_to_count.keys())}')
+        return (max(self.stats.bigram_to_count[bigram] - discount, 0) / self.stats.unigram_to_count[preceding_unigram]) + \
+               (lambda_x_1 * p_continuation_x)
 
 
 def compute_prop(prop_computer, ngram_stats, preceding_unigram, d=0.75):

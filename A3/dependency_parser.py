@@ -29,10 +29,39 @@ class Parser:
 
     # TODO Implement the right_arc and reduce functions. Make sure they obey the constraints as set out in the lecture slides.
     def right_arc(self):
-        raise NotImplementedError
+        # if self.left_arc():
+        #     return False
+        if len(self.stack) == 0 or len(self.input_string) == 0:
+            return False
+        # I[0] & V[j]
+        first_input = self.input_string[0]
+        first_input_token = first_input.split('_')[0]
+        # S[0] & V[i]
+        top_stack = self.stack[-1]
+        top_stack_token = top_stack.split('_')[0]
+        # V[i] -> V[j] in R & not in dependency
+        if [top_stack_token,first_input_token] in self.rules and not self.is_in_dependencies(first_input):
+            self.dependencies.append([top_stack,first_input])
+            self.input_string = self.input_string[1:]
+            self.stack.append(first_input)
+            return True
+        return False
+
 
     def reduce(self):
-        raise NotImplementedError
+        # if self.left_arc():
+        #     return False
+        # if self.right_arc():
+        #     return False
+        # if self.shift():
+        #     return False
+        if len(self.stack) <= 1:
+            return False
+        top_stack = self.stack[-1]
+        if self.is_in_dependencies(top_stack):
+            self.stack = self.stack[:-1]
+            return True
+
 
     def shift(self):
         if len(self.input_string) == 0:

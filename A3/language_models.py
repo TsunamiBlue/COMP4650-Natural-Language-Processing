@@ -101,7 +101,7 @@ class KNSmoothing:
         num_denominator = len(self.stats.bigram_to_count.keys())
 
         p_continuation_x = num_numerator / num_denominator
-        # print(f'bigram: {bigram} num_after: {num_after} lambda_x_1: {lambda_x_1} num_numerator: {num_numerator} num_denominator: {num_denominator} all:{len(self.stats.bigram_to_count.keys())}')
+
         return (max(self.stats.bigram_to_count[bigram] - discount, 0) / self.stats.unigram_to_count[preceding_unigram]) + \
                (lambda_x_1 * p_continuation_x)
 

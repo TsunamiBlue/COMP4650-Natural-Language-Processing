@@ -1,4 +1,6 @@
 import json
+import string
+import collections
 
 
 class TreeNode:
@@ -53,3 +55,38 @@ with open('train_y.txt', 'r') as f:
 
 # TODO estimate the PCFG that generated (x, y) and print to output. Your output should be a list of rules along with
 # their corresponding probabilities (e.g. [(A -> B, 0.9), (A -> C, 0.1), ...]
+
+word_list = []
+rule_list = []
+for sentence in x:
+    for word in sentence:
+        if word not in word_list:
+            word_list.append(word)
+
+for rule in string.ascii_uppercase:
+    rule_list.append(rule)
+
+frequency_dict = collections.Counter()
+single_dict = collections.Counter()
+for tree_node in y:
+    root_pos = tree_node.val
+    queue = [tree_node]
+    while len(queue) != 0:
+        current_node = queue.pop()
+        if len(current_node.children) != 0:
+            for child_node in current_node.children:
+                frequency_dict[(current_node.val,child_node.val)] +=1
+                single_dict[current_node.val] +=1
+                queue.append(child_node)
+
+# print(frequency_dict)
+# print(single_dict)
+
+ans = []
+for key in frequency_dict.keys():
+    a,b = key
+    current = frequency_dict[key] / single_dict[a]
+    ans.append(((a,b),current))
+
+print(ans)
+

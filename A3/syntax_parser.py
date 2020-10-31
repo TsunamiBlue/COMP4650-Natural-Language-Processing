@@ -74,9 +74,14 @@ for tree_node in y:
     while len(queue) != 0:
         current_node = queue.pop()
         if len(current_node.children) != 0:
-            for child_node in current_node.children:
-                frequency_dict[(current_node.val,child_node.val)] +=1
-                single_dict[current_node.val] +=1
+            child_nodes = current_node.children
+            child_node_names = [node.val for node in child_nodes]
+            parse_route = f"{current_node.val}->"
+            for name in child_node_names:
+                parse_route+=f"{name}"
+            frequency_dict[(current_node.val,parse_route)] +=1
+            single_dict[current_node.val] +=1
+            for child_node in child_nodes:
                 queue.append(child_node)
 
 # print(frequency_dict)
@@ -86,7 +91,8 @@ ans = []
 for key in frequency_dict.keys():
     a,b = key
     current = frequency_dict[key] / single_dict[a]
-    ans.append(((a,b),current))
+    ans.append((b,current))
 
+# answer is in ans:list
 print(ans)
 
